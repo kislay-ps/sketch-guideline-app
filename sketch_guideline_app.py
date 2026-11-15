@@ -152,6 +152,10 @@ def make_difference_outputs(image1, image2, prefix):
     # Increase contrast so small pixel differences are easier to see.
     gray_difference = ImageEnhance.Contrast(difference.convert("L")).enhance(3.0)
     heatmap = ImageOps_colorize(gray_difference)
+<<<<<<< HEAD
+    false_color_heatmap = FalseColorImageOps_colorize(gray_difference)
+=======
+>>>>>>> e5067822e0584b0a9b08716042cda9179c38612e
 
     outputs = {
         "_image1_grid.png": image1,
@@ -160,6 +164,10 @@ def make_difference_outputs(image1, image2, prefix):
         "_side_by_side.png": side_by_side,
         "_difference.png": difference,
         "_heatmap.png": heatmap,
+<<<<<<< HEAD
+        "_false_color_heapmap.png": false_color_heatmap,
+=======
+>>>>>>> e5067822e0584b0a9b08716042cda9179c38612e
     }
     for suffix, result in outputs.items():
         result.save(str(prefix) + suffix)
@@ -187,6 +195,56 @@ def ImageOps_colorize(gray_image):
             lut.extend((255, int(220 * (1 - ratio)), int(255 * ratio)))
     return gray_image.convert("RGB").point(lut)
 
+<<<<<<< HEAD
+def FalseColorImageOps_colorize(gray_image):
+    """
+    Convert a grayscale difference image into a vivid false-colour heatmap.
+
+    Colour ramp:
+        Black -> Cyan -> Magenta -> Yellow
+
+    0   = Black
+    85  = Cyan
+    170 = Magenta
+    255 = Yellow
+    """
+
+    # Colour transition points
+    stops = [
+        (0,   (0, 0, 0)),          # Black
+        (85,  (0, 255, 255)),      # Cyan
+        (170, (255, 0, 255)),      # Magenta
+        (255, (255, 255, 0)),      # Yellow
+    ]
+
+    lut = []
+
+    for value in range(256):
+
+        # Find the colour segment
+        for i in range(len(stops) - 1):
+
+            x1, c1 = stops[i]
+            x2, c2 = stops[i + 1]
+
+            if x1 <= value <= x2:
+
+                ratio = (value - x1) / (x2 - x1)
+
+                # Linear interpolation for RGB
+                rgb = tuple(
+                    int(c1[channel] +
+                        ratio * (c2[channel] - c1[channel]))
+                    for channel in range(3)
+                )
+
+                lut.extend(rgb)
+                break
+
+    return gray_image.convert("RGB").point(lut)
+
+=======
+>>>>>>> e5067822e0584b0a9b08716042cda9179c38612e
 def generate_blank_a4_pdf(
     rows,
     cols,
@@ -432,7 +490,11 @@ def main():
         print(f"Mean absolute grayscale difference: {mean_difference:.2f}/255")
         print(f"Difference range: {extrema[0]} to {extrema[1]}")
         print(f"Output filename prefix: {prefix.resolve()}")
+<<<<<<< HEAD
+        print("Created file suffixes:\n _image1_grid.png,\n _image2_aligned_grid.png,\n _overlay.png,\n _side_by_side.png,\n _difference.png,\n _heatmap.png\n, _false_color_heatmap.png\n")
+=======
         print("Created file suffixes:\n _image1_grid.png,\n _image2_aligned_grid.png,\n _overlay.png,\n _side_by_side.png,\n _difference.png,\n _heatmap.png\n")
+>>>>>>> e5067822e0584b0a9b08716042cda9179c38612e
 
         if args.create_blank_a4:
             generate_blank_a4_pdf(
